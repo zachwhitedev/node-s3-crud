@@ -10,33 +10,35 @@ const s3 = new AWS.S3({
 });
 
 
-const testfile = {
-    path: './credentials.csv'
-}
 
-uploadFile(testfile, Math.random().toString().slice(14) + '.csv', 'zw-test1');
-//upload a file to s3 amazon when file is under 5mb. 
-function uploadFile(file, key, bucketname) {
-    
-
-    stream = fs.createReadStream(file.path);
-    
-    params = {
-        Bucket: bucketname,
-        Key: key,
-        Body: stream
+app.get('/upload', (req, res) => {
+    const testfile = {
+        path: './credentials.csv'
     }
-
-    s3.upload(params, function(err, data) {
-        if(err) {
-            console.log(err);
+    function uploadFile(file, key, bucketname) {
+        
+        
+        stream = fs.createReadStream(file.path);
+        
+        params = {
+            Bucket: bucketname,
+            Key: key,
+            Body: stream
         }
+        
+        s3.upload(params, function(err, data) {
+            if(err) {
+                console.log(err);
+            }
+            
+            console.log('Successfully uploaded package. key:' + key);
+            console.log(data);
+        });
+        
+    }
+    uploadFile(testfile, Math.random().toString().slice(14) + '.csv', 'zw-test1');
+})
 
-        console.log('Successfully uploaded package. key:' + key);
-        console.log(data);
-    });
-
-}
 
 
 app.get('/showobjects', (req, res) => {
@@ -51,7 +53,7 @@ app.get('/showobjects', (req, res) => {
     });
 })
 
-app.get('/s3Proxy', function(req, res, next) {
+app.get('/download', function(req, res, next) {
   // download the file via aws s3 here
   var fileKey = '81185.csv'
 

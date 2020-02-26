@@ -1,0 +1,1 @@
+access/secret keys come from IAM role I made called "s3superuser"
